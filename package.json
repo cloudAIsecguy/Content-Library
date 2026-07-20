@@ -1,0 +1,13 @@
+{
+  "name": "content-library",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Content Library",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "dev": "npx --yes serve ."
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
