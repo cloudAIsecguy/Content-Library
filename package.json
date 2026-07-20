@@ -1,13 +1,23 @@
 {
-  "name": "content-library",
+  "name": "orca-content-hub",
   "version": "0.1.0",
   "private": true,
-  "description": "Content Library",
   "scripts": {
-    "start": "npx --yes serve .",
-    "dev": "npx --yes serve ."
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "engines": {
-    "node": ">=18"
+  "dependencies": {
+    "next": "14.2.5",
+    "next-auth": "4.24.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@types/node": "20.14.10"
   }
 }

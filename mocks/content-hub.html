@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Orca Content Hub — Concept</title>
+<style>
+  :root{
+    color-scheme: light;
+    --navy: #101921;
+    --navy-2: #272e3f;
+    --coral: #e41e5b;
+    --coral-dark:#c21850;
+    --teal:#49caee;
+    --bg:#f9f9fc;
+    --card:#ffffff;
+    --border:#e2e6ec;
+    --text:#101921;
+    --text-dim:#5f6d8f;
+    --green:#1ea672;
+    --amber:#d69a12;
+    --red:#d94f4f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:14px;
+  }
+  #app{display:flex; min-height:100vh;}
+
+  /* Sidebar */
+  .sidebar{
+    width:230px; flex-shrink:0; background:var(--navy); color:#dfe6f0;
+    display:flex; flex-direction:column; padding:18px 14px;
+  }
+  .brand{display:flex; align-items:center; gap:8px; padding:4px 6px 18px 6px; border-bottom:1px solid rgba(255,255,255,.1); margin-bottom:14px;}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--coral);}
+  .brand-title{font-weight:700; font-size:15px; color:#fff;}
+  .brand-sub{font-size:11px; color:#8fa0bb;}
+  nav.navlist{display:flex; flex-direction:column; gap:2px; flex:1;}
+  .nav-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:#7488a6; margin:14px 8px 4px;}
+  .nav-item{
+    display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:7px;
+    color:#c9d4e4; cursor:pointer; font-size:13.5px; text-decoration:none;
+  }
+  .nav-item:hover{background:rgba(255,255,255,.06);}
+  .nav-item.active{background:var(--coral); color:#fff; font-weight:600;}
+  .nav-icon{width:16px; text-align:center; opacity:.9;}
+  .sidebar-footer{border-top:1px solid rgba(255,255,255,.1); padding-top:12px; margin-top:10px; font-size:11.5px; color:#8fa0bb; line-height:1.5;}
+  .sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green); margin-right:5px;}
+
+  /* Main */
+  .content{flex:1; min-width:0; display:flex; flex-direction:column;}
+  .topbar{
+    background:#fff; border-bottom:1px solid var(--border); padding:12px 26px;
+    display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:5;
+  }
+  .search-wrap{flex:1; max-width:520px; position:relative;}
+  .search-wrap input{
+    width:100%; padding:8px 12px 8px 32px; border:1px solid var(--border); border-radius:8px;
+    font-size:13.5px; background:var(--bg);
+  }
+  .search-wrap input:focus{outline:2px solid var(--teal); outline-offset:0; background:#fff;}
+  .search-wrap .icon{position:absolute; left:10px; top:8px; opacity:.5; font-size:13px;}
+  .topbar-right{margin-left:auto; display:flex; align-items:center; gap:14px; font-size:12.5px; color:var(--text-dim);}
+  .pill{background:#eef6f4; color:var(--green); border:1px solid #cdeadf; padding:4px 10px; border-radius:999px; font-weight:600; font-size:11.5px;}
+  .avatar{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+
+  .banner{
+    background:#fff7ed; border-bottom:1px solid #fde3c8; color:#8a4a12; font-size:12.5px;
+    padding:8px 26px;
+  }
+
+  main.view{padding:24px 26px 60px; max-width:1180px; width:100%; margin:0 auto;}
+
+  h1.pagetitle{font-size:20px; margin:0 0 4px;}
+  p.pagesub{color:var(--text-dim); margin:0 0 22px; font-size:13.5px; max-width:680px;}
+
+  .stat-row{display:flex; gap:14px; margin-bottom:26px; flex-wrap:wrap;}
+  .stat-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 18px; min-width:150px; flex:1;}
+  .stat-card .num{font-size:22px; font-weight:700;}
+  .stat-card .lbl{font-size:11.5px; color:var(--text-dim); margin-top:2px;}
+
+  .section{margin-bottom:30px;}
+  .section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .section-head h2{font-size:14.5px; margin:0; display:flex; align-items:center; gap:8px;}
+  .section-head .count{color:var(--text-dim); font-weight:400; font-size:12px;}
+  .refresh-btn{font-size:11.5px; color:var(--teal); background:none; border:none; cursor:pointer; font-weight:600;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px;}
+  .file-card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px; padding:13px 14px;
+    text-decoration:none; color:var(--text); display:flex; flex-direction:column; gap:8px;
+    transition:box-shadow .15s, border-color .15s;
+  }
+  .file-card:hover{box-shadow:0 4px 14px rgba(20,30,50,.08); border-color:#cbd5e1;}
+  .file-card .top-row{display:flex; align-items:flex-start; gap:9px;}
+  .file-icon{font-size:17px; line-height:1;}
+  .file-title{font-size:13px; font-weight:600; line-height:1.35; flex:1;}
+  .file-meta{font-size:11.3px; color:var(--text-dim); display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+  .freshness{width:7px;height:7px;border-radius:50%; flex-shrink:0;}
+  .fresh-green{background:var(--green);} .fresh-amber{background:var(--amber);} .fresh-red{background:var(--red);}
+  .skeleton{background:var(--card); border:1px solid var(--border); border-radius:10px; height:78px; opacity:.5;}
+
+  .tool-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-bottom:28px;}
+  .tool-card{
+    background:linear-gradient(135deg,#101921,#272e3f); color:#fff; border-radius:10px; padding:16px;
+    text-decoration:none; display:flex; flex-direction:column; gap:6px; min-height:82px;
+  }
+  .tool-card .tname{font-weight:700; font-size:13.5px;}
+  .tool-card .tdesc{font-size:11.5px; color:#c3d1e6;}
+  .tool-card .tgo{font-size:11px; color:var(--coral); font-weight:700; margin-top:auto;}
+  .tool-card.edit{background:#fff; border:1.5px dashed var(--border); color:var(--text-dim);}
+  .tool-card.edit .tname{color:var(--text-dim);}
+
+  .empty{padding:26px; text-align:center; color:var(--text-dim); font-size:13px; border:1px dashed var(--border); border-radius:10px; background:#fff;}
+  .role-banner{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:22px; display:flex; align-items:center; gap:16px;}
+  .role-banner .emoji{font-size:30px;}
+  .role-banner h1{margin:0 0 2px; font-size:18px;}
+  .role-banner p{margin:0; font-size:12.5px; color:var(--text-dim);}
+
+  .archive-toggle{display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:16px; cursor:pointer;}
+  .archive-toggle input{width:16px; height:16px;}
+  .archive-toggle .lbl{font-size:13px; font-weight:600;}
+  .archive-toggle .sub{font-size:11.5px; color:var(--text-dim);}
+  .archive-note{background:#fef2f2; border:1px solid #fbd8d8; color:#8a2f2f; font-size:12px; border-radius:8px; padding:10px 14px; margin-bottom:14px;}
+  #archiveResults{display:none;}
+  #archiveResults.show{display:block;}
+  .dim-card{opacity:.6; filter:grayscale(40%);}
+
+  .submit-box{background:#fff; border:1px solid var(--border); border-radius:12px; padding:22px; max-width:520px;}
+  .submit-box label{display:block; font-size:12px; font-weight:600; margin:12px 0 4px;}
+  .submit-box input, .submit-box select, .submit-box textarea{
+    width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:7px; font-size:13px; font-family:inherit;
+  }
+  .submit-btn{margin-top:18px; background:var(--coral); color:#fff; border:none; padding:9px 18px; border-radius:7px; font-weight:700; font-size:13px; cursor:pointer;}
+  .gov-list{margin-top:20px; font-size:12px; color:var(--text-dim); line-height:1.8;}
+
+  ::placeholder{color:#9aa4b2;}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <div class="brand-title">Content Hub</div>
+        <div class="brand-sub">Orca Security · GTM</div>
+      </div>
+    </div>
+    <nav class="navlist" id="navlist">
+      <div class="nav-item active" data-view="home"><span class="nav-icon">⌂</span> Home</div>
+      <div class="nav-label">By Role</div>
+      <div class="nav-item" data-view="se"><span class="nav-icon">◆</span> Sales Engineers</div>
+      <div class="nav-item" data-view="ae"><span class="nav-icon">◆</span> Account Executives</div>
+      <div class="nav-item" data-view="cs"><span class="nav-icon">◆</span> Customer Success</div>
+      <div class="nav-label">Library</div>
+      <div class="nav-item" data-view="archive"><span class="nav-icon">▤</span> Legacy Archive</div>
+      <div class="nav-item" data-view="submit"><span class="nav-icon">＋</span> Submit New Asset</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div><span class="sync-dot"></span>Synced with Google Drive</div>
+      <div id="syncTime">last synced just now</div>
+    </div>
+  </aside>
+
+  <div class="content">
+    <div class="banner">Concept mockup — role pages below are wired to the real folders inside your Content Library Drive folder (the one you shared). The mapping of folder → role is a first-pass guess; see Housekeeping on Home and the note in Legacy Archive for what needs a human decision. Global search still queries your whole Drive.</div>
+    <div class="topbar">
+      <div class="search-wrap">
+        <span class="icon">⌕</span>
+        <input id="globalSearch" placeholder="Search all content… (e.g. Upwind, onboarding, ROI)" />
+      </div>
+      <div class="topbar-right">
+        <span class="pill">● Drive connected</span>
+        <div class="avatar">TC</div>
+      </div>
+    </div>
+    <main class="view" id="viewRoot"></main>
+  </div>
+</div>
+
+<script>
+const DRIVE_SEARCH = "mcp__ec7eb467-a752-4736-b05a-06ec1cb64945__search_files";
+const DRIVE_RECENT = "mcp__ec7eb467-a752-4736-b05a-06ec1cb64945__list_recent_files";
+const cache = {};
+
+function iconFor(mime){
+  if(!mime) return "📄";
+  if(mime.includes("spreadsheet")) return "📊";
+  if(mime.includes("presentation")) return "📽️";
+  if(mime.includes("folder")) return "📁";
+  if(mime.includes("document")) return "📝";
+  if(mime.includes("pdf")) return "📕";
+  return "📄";
+}
+function daysAgo(iso){
+  if(!iso) return 9999;
+  return Math.floor((Date.now() - new Date(iso).getTime())/86400000);
+}
+function freshClass(iso){
+  const d = daysAgo(iso);
+  if(d <= 90) return "fresh-green";
+  if(d <= 180) return "fresh-amber";
+  return "fresh-red";
+}
+function relTime(iso){
+  const d = daysAgo(iso);
+  if(d <= 0) return "today";
+  if(d === 1) return "1 day ago";
+  if(d < 30) return d + " days ago";
+  if(d < 365) return Math.floor(d/30) + " mo ago";
+  return Math.floor(d/365) + " yr ago";
+}
+function esc(s){ return (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+async function callTool(name, args){
+  const key = name + JSON.stringify(args);
+  if(cache[key]) return cache[key];
+  try{
+    const r = await window.cowork.callMcpTool(name, args);
+    let data = r.structuredContent;
+    if(!data){
+      try{ data = JSON.parse(r.content[0].text); }catch(e){ data = null; }
+    }
+    cache[key] = data;
+    return data;
+  }catch(e){
+    console.error("tool call failed", name, e);
+    return null;
+  }
+}
+
+function fileCard(f){
+  const url = f.viewUrl || "#";
+  return `<a class="file-card" href="${esc(url)}" target="_blank" rel="noopener">
+    <div class="top-row">
+      <span class="file-icon">${iconFor(f.mimeType)}</span>
+      <span class="file-title">${esc(f.title||"Untitled")}</span>
+    </div>
+    <div class="file-meta">
+      <span class="freshness ${freshClass(f.modifiedTime)}"></span>
+      Updated ${relTime(f.modifiedTime)} · ${esc((f.owner||"").split("@")[0]||"unknown")}
+    </div>
+  </a>`;
+}
+
+function skeletons(n){ return Array(n).fill('<div class="skeleton"></div>').join(""); }
+
+async function renderQuerySection(containerId, query, pageSize=6){
+  const el = document.getElementById(containerId);
+  el.innerHTML = `<div class="card-grid">${skeletons(3)}</div>`;
+  const data = await callTool(DRIVE_SEARCH, {query, pageSize, excludeContentSnippets:true});
+  const files = (data && data.files) || [];
+  if(!files.length){
+    el.innerHTML = `<div class="empty">No matching content found in Drive yet for this category.</div>`;
+    return;
+  }
+  el.innerHTML = `<div class="card-grid">${files.map(fileCard).join("")}</div>`;
+}
+
+const ROLE_TOOLS = {
+  se: [
+    {name:"Opine", desc:"Deal-desk & POV feedback tool", url:"https://tryopine.com"},
+    {name:"SE Confluence", desc:"Technical playbooks & runbooks", url:"https://orcasecurity.atlassian.net/wiki/spaces/SETeam/overview"},
+    {name:"Crayon", desc:"Competitive intel & battlecards", url:"https://app.crayon.co/intel/orca-security/home/"},
+  ],
+  ae: [
+    {name:"Salesforce", desc:"Opportunity & pipeline data", url:"#"},
+    {name:"Gong", desc:"Call recordings & coaching", url:"#"},
+    {name:"Highspot", desc:"Buyer-facing sales content", url:"#"},
+  ],
+  cs: [
+    {name:"Gainsight", desc:"Health scores & renewals", url:"#"},
+    {name:"CS Confluence", desc:"Onboarding & QBR templates", url:"#"},
+    {name:"Slack #customer-success", desc:"Team channel", url:"#"},
+  ],
+};
+
+function pidQuery(ids){ return ids.map(id => `parentId = '${id}'`).join(" or "); }
+
+const LIBRARY_ROOT = "1bOBp-4Z9R2ZVnIR-YF6v2hsoAjNBmpmC"; // real Content Library Drive folder Tim shared
+
+const ROLE_CONFIG = {
+  se: {
+    title:"Sales Engineers", emoji:"🛠️",
+    desc:"Mapped from your actual Content Library folders — competitive, product-technical, and value-engineering content.",
+    sections:[
+      {id:"se-comp", label:"Competitive & Displacement", query:pidQuery([
+        "1MXPAKQQvV-aadq_J1w3f-BSo7vpb-G4h", // 2 Competitive Intelligence
+        "1wIP4IFSmTd-BmoQoq0o43zB4xYgkVRxR", // Orca Technical Differentiators
+        "1P1qtsD2dPIK2AgjhCUVRRhxoIGGmBw-R", // Wiz to Orca Migration
+        "1DWx7Vp4FFlwM0iE7YNf4FaVuZaP8sZlN", // Migration Plan: Wiz to Orca Security
+        "1iyJrG4sRPrWfgBG_RFFnEymTR3eUXzre", // Wiz Pricing Docs
+      ])},
+      {id:"se-tech", label:"Product & Technical Deep Dives", query:pidQuery([
+        "1TIudCmYZFsisv3GXvulSnKfeFz94vier", // 3 Recorded Demo
+        "1pdRFTPHCUZNP5wTVmCi5T-f5lNXUb3-9", // 11 Orca Agent
+        "1jWi3O-oWXCdxrFJ-v9SxZ6_YJGWkWDi5", // 20 Orca Agent (dup, see housekeeping)
+        "1yFe9Ix1GCYgcHxiNXu9qG6VcOc0AMhO2", // Orca AI Functions FAQ
+        "1K0lNYS9Ul0zqHJlpOdOD-r4YqL4kU9Z9", // Orca Sensor
+        "19m9OGnJXK6sbAK8ZK4RRJZ5NC10ZvgHy", // AppSec
+        "1F-gsfNp8MESNt_IEIMMseJZLW0KOLzZZ", // 12 FedRAMP
+      ])},
+      {id:"se-value", label:"Value Engineering", query:pidQuery([
+        "15z9sDip5d5Y8cZrHsJ7Wwcoldurf8NYq", // 18 ROI Calculator and Cloud Cost Optimization
+      ])},
+    ]
+  },
+  ae: {
+    title:"Account Executives", emoji:"💼",
+    desc:"Mapped from your actual Content Library folders — pitch, pricing/objection handling, and analyst proof points.",
+    sections:[
+      {id:"ae-pitch", label:"Pitch & Positioning", query:pidQuery([
+        "1kgz8ayMZkAuZz4Muzih-Rk3nzRvQ7_G5", // 1 Pitch Deck
+        "1NXDBcNErKWOY_mHODzP9I_MJC1-3u24R", // 5 Positioning and Personas
+        "1DVnnzqBvDmjKjkrJL96kYCkO0xd78wmp", // Messaging and Positioning
+        "1tcbSf60VGVE-PogevLbHRsojrSVEwuOD", // Slide Deck Toolkit Template
+        "1znTQOQql1VsmJrUQt977QQSACr3PllOX", // Sales Presentation and Document Templates
+        "18lUn5pxLZQ5w-fvvAubWFyiOiQm0v8ju", // Sales Presentations Library
+        "1HeoHcmdjRr27xodKNDP1tYSU7lOzD_4g", // DataSheets and Solution Briefs
+        "1fH7KXsy3tMC6XFpXl7m25CeQYJTUEXds", // 15 Security and IT (persona page, not internal IT)
+      ])},
+      {id:"ae-pricing", label:"Pricing, FAQ & Objection Handling", query:pidQuery([
+        "1OjloKfNorZSsCEWOSKYT8oLRdKDUGy3c", // 9 Pricing and Packaging
+        "113uY7LUcVBO9aw3s7lfNDHCa4UE-qz_o", // 6 Sales FAQ
+        "1zF8Ves8Y91W5fS1QjFkB-uDyfh5R6e5y", // Cheat Sheets
+        "1SCaVHoRLZVQCczV086Uv29zh-CPA0Yth", // 7 Sales Toolkit
+        "1I4xMYYAUo7NFN7lBeSt_ltZB0mQ15Ly8", // 4 Sales Enablement
+        "1w9PIEbplnPu6NQ7TpuPs5OrIb3ttsnha", // Sales Excellence
+        "1peOYre4BrHxA2gLRkGMsb_jP9a9h-t8W", // 10 Collateral
+      ])},
+      {id:"ae-research", label:"Research & Analyst Reports", query:pidQuery([
+        "1lXykr0lcBdeahr1KSXGrHRu3WTvXRU4L", // Research Reports
+        "1sqs_-It73WcbEXaNNqsgzS0GIby8Tpxz", // TAG Cyber Report (a)
+        "1-OnbedRTbjkQIC-KleeRBxYEzoaAYuxP", // TAG Cyber Report (b, dup)
+        "1ZHoHYL8I3EyVQ1fQkxwKzHs2q17mge82", // 2026 State of AI Security Report
+        "1SERa7CuasF8bW0HUkR9kXmMUWg3lKxXp", // 2025 State of Cloud Security Report
+      ])},
+    ]
+  },
+  cs: {
+    title:"Customer Success", emoji:"🤝",
+    desc:"Mapped from what actually exists today — mostly references & case studies. Onboarding/QBR/renewal content wasn't found in this folder (see note below).",
+    sections:[
+      {id:"cs-refs", label:"Customer References & Case Studies", query:pidQuery([
+        "1cqVeKTPjj9jRN6UGpLwu__SSIBuC3Q3p", // 8 Customer References
+        "1dHhjrQ3vz03Gjs3eTFVT7rA-kHi24A73", // 19 Case Studies
+        "1mYk4x4Ukwxt7m6ALIYR4rr6M4FdD0VzD", // 16 Customers
+      ])},
+      {id:"cs-account", label:"Account & Product Resources", query:pidQuery([
+        "1BWLEntAfceq0LMkzt-Lj0BAhW1N1spEG", // User Center
+        "1_BVUMZGXerC1UmnsLgec8G11GfsZZqg0", // 21 Pod Pages
+      ])},
+    ]
+  }
+};
+
+function toolCardHtml(t){
+  if(t.url === "#"){
+    return `<div class="tool-card edit"><div class="tname">${esc(t.name)}</div><div class="tdesc">${esc(t.desc)} — link TBD</div></div>`;
+  }
+  return `<a class="tool-card" href="${esc(t.url)}" target="_blank" rel="noopener">
+    <div class="tname">${esc(t.name)}</div>
+    <div class="tdesc">${esc(t.desc)}</div>
+    <div class="tgo">Open →</div>
+  </a>`;
+}
+
+function renderHome(){
+  document.getElementById("viewRoot").innerHTML = `
+    <h1 class="pagetitle">Welcome back, Tim</h1>
+    <p class="pagesub">A fresh, role-first home for GTM content — replacing the old Sites library. Pick a role on the left, or jump into what's recently changed in Drive below.</p>
+    <div class="stat-row">
+      <div class="stat-card"><div class="num">3</div><div class="lbl">Roles live (SE, AE, CS)</div></div>
+      <div class="stat-card"><div class="num">9</div><div class="lbl">Curated content categories</div></div>
+      <div class="stat-card"><div class="num" style="color:var(--red)">Legacy</div><div class="lbl">Old assets moved to Archive, not deleted</div></div>
+      <div class="stat-card"><div class="num" style="color:var(--green)">Live</div><div class="lbl">Google Drive sync status</div></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Recently updated across all roles</h2><button class="refresh-btn" onclick="loadHome()">Refresh</button></div>
+      <div id="home-recent"><div class="card-grid">${skeletons(4)}</div></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Jump to a role</h2></div>
+      <div class="tool-grid">
+        <div class="tool-card" style="cursor:pointer" onclick="setView('se')"><div class="tname">🛠️ Sales Engineers</div><div class="tdesc">Competitive intel, technical deep dives, ROI tools</div></div>
+        <div class="tool-card" style="cursor:pointer" onclick="setView('ae')"><div class="tname">💼 Account Executives</div><div class="tdesc">Pitch decks, pricing, analyst reports</div></div>
+        <div class="tool-card" style="cursor:pointer" onclick="setView('cs')"><div class="tname">🤝 Customer Success</div><div class="tdesc">Customer refs, case studies</div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Housekeeping — based on your real Drive folder</h2></div>
+      <div class="archive-note" style="margin-bottom:12px;background:#fef9e7;border-color:#f3e2a0;color:#7a5c00;">
+        ⚠️ CS gap: no onboarding, QBR, or renewal-playbook folders were found anywhere in this library. That content likely lives elsewhere (Gainsight? a separate CS Drive?) — worth confirming with the CS team before this section ships.
+      </div>
+      <div class="gov-list" style="font-size:13px">
+        <div><strong>Recommend moving out of this hub entirely</strong> — not GTM content: HR Assets, 17 Finance, Marketplace Transactions, Sales Agreements and Policies.</div>
+        <div><strong>Recommend a future 4th role/section, not SE/AE/CS</strong>: 14 Partners + Zscaler Partnership and Integration (Partner/Channel), top-level Marketing folder, Logos/Banners/Zoom Backgrounds (shared brand kit), Events.</div>
+        <div><strong>Needs a human decision</strong>: "13 Sales Internal Resources" is a near-duplicate of the whole top-level taxonomy — see Legacy Archive for details.</div>
+      </div>
+    </div>
+  `;
+  loadHome();
+}
+async function loadHome(){
+  const el = document.getElementById("home-recent");
+  el.innerHTML = `<div class="card-grid">${skeletons(4)}</div>`;
+  const data = await callTool(DRIVE_RECENT, {pageSize:8, orderBy:"lastModified", excludeContentSnippets:true});
+  const files = ((data && data.files) || []).filter(f => !f.mimeType.includes("folder"));
+  el.innerHTML = files.length ? `<div class="card-grid">${files.map(fileCard).join("")}</div>` : `<div class="empty">Nothing recent found.</div>`;
+}
+
+function renderRole(key){
+  const cfg = ROLE_CONFIG[key];
+  const root = document.getElementById("viewRoot");
+  root.innerHTML = `
+    <div class="role-banner">
+      <div class="emoji">${cfg.emoji}</div>
+      <div><h1>${esc(cfg.title)}</h1><p>${esc(cfg.desc)}</p></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Role-specific tools</h2></div>
+      <div class="tool-grid">${ROLE_TOOLS[key].map(toolCardHtml).join("")}</div>
+    </div>
+    ${cfg.sections.map(s => `
+      <div class="section">
+        <div class="section-head"><h2>${esc(s.label)}</h2><button class="refresh-btn" onclick="renderQuerySection('${s.id}', ${JSON.stringify(s.query)})">Refresh</button></div>
+        <div id="${s.id}"></div>
+      </div>
+    `).join("")}
+  `;
+  cfg.sections.forEach(s => renderQuerySection(s.id, s.query));
+}
+
+const ARCHIVE_FOLDER_IDS = [
+  "1sB9ayOOxJ3HE2d--S4wOWz-n5zC_Po7a", // Training Archive (literally named archive)
+  "11_-z-qvUd0WhInTcxGL2_Djh9rqFVp9g", // Google Acquiring Wiz (reactive news-jack, event has passed)
+  "1hUO_1l597H1sBZda6D-njJY9vbZvb38n", // Sales Kit: Rapid Response - Google Acquiring Wiz
+];
+
+function renderArchive(){
+  document.getElementById("viewRoot").innerHTML = `
+    <h1 class="pagetitle">Legacy Archive</h1>
+    <p class="pagesub">Old assets aren't deleted — they're moved here, out of the way, until an owner reviews and either refreshes or retires them. Nothing here shows up in role pages or search by default.</p>
+    <div class="archive-note">⚠️ These three folders from your real library look like archive candidates today: a folder literally named "Training Archive," and two folders built for the Google/Wiz acquisition news cycle, which has since passed.</div>
+    <label class="archive-toggle">
+      <input type="checkbox" onchange="toggleArchive(this)">
+      <div><div class="lbl">Show legacy content</div><div class="sub">Hidden by default — this is the point.</div></div>
+    </label>
+    <div id="archiveResults"></div>
+    <div class="section" style="margin-top:26px">
+      <div class="section-head"><h2>Other cleanup spotted in your Drive</h2></div>
+      <div class="gov-list" style="font-size:13px">
+        <div>• "11 Orca Agent" and "20 Orca Agent" — two separate folders, same topic. Pick one.</div>
+        <div>• "TAG Cyber Report" exists as two separate folders with the identical name.</div>
+        <div>• Four duplicate shortcuts to "2024 Orca Security Pitch Deck v1" sitting loose at the library root.</div>
+        <div>• "13 Sales Internal Resources" contains its own copies of ROI Calculator, Sales FAQ, Research Reports, Logos/Banners, and Live Events — all of which already exist as separate top-level folders. This nested duplicate tree is likely the biggest source of clutter.</div>
+      </div>
+    </div>
+  `;
+}
+async function toggleArchive(cb){
+  const el = document.getElementById("archiveResults");
+  if(!cb.checked){ el.classList.remove("show"); return; }
+  el.classList.add("show");
+  el.innerHTML = `<div class="card-grid">${skeletons(4)}</div>`;
+  const data = await callTool(DRIVE_SEARCH, {query:pidQuery(ARCHIVE_FOLDER_IDS), pageSize:10, excludeContentSnippets:true});
+  const files = (data && data.files) || [];
+  el.innerHTML = files.length
+    ? `<div class="card-grid">${files.map(f => `<div class="dim-card">${fileCard(f)}</div>`).join("")}</div>`
+    : `<div class="empty">No stale content matched (good sign).</div>`;
+}
+
+function renderSubmit(){
+  document.getElementById("viewRoot").innerHTML = `
+    <h1 class="pagetitle">Submit a New Asset</h1>
+    <p class="pagesub">The old library became a dumping ground because anyone could drop a file in with no owner or expiry. This intake step is how we keep the new one clean.</p>
+    <div class="submit-box">
+      <label>Asset title</label>
+      <input placeholder="e.g. Q3 Competitive Battlecard — Wiz">
+      <label>Drive link</label>
+      <input placeholder="Paste Google Drive share link">
+      <label>Role(s)</label>
+      <select multiple size="3">
+        <option>Sales Engineers</option>
+        <option>Account Executives</option>
+        <option>Customer Success</option>
+      </select>
+      <label>Owner (accountable for keeping it current)</label>
+      <input placeholder="name@orca.security">
+      <label>Review cadence</label>
+      <select><option>Every 3 months</option><option>Every 6 months</option><option>Every 12 months</option></select>
+      <button class="submit-btn">Submit for review →</button>
+    </div>
+    <div class="gov-list">
+      <div>✓ Every asset needs an owner and a review date</div>
+      <div>✓ Nothing publishes without a role tag</div>
+      <div>✓ Missed reviews auto-flag to Legacy Archive, not deleted</div>
+    </div>
+  `;
+}
+
+function setView(view){
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.view === view));
+  localStorage.setItem("contentHubView", view);
+  if(view === "home") renderHome();
+  else if(view === "archive") renderArchive();
+  else if(view === "submit") renderSubmit();
+  else renderRole(view);
+}
+
+document.getElementById("navlist").addEventListener("click", e => {
+  const item = e.target.closest(".nav-item");
+  if(item) setView(item.dataset.view);
+});
+
+document.getElementById("globalSearch").addEventListener("keydown", async e => {
+  if(e.key !== "Enter") return;
+  const term = e.target.value.trim();
+  if(!term) return;
+  setView("home");
+  const root = document.getElementById("viewRoot");
+  root.innerHTML = `<h1 class="pagetitle">Search results for "${esc(term)}"</h1><div id="search-results"><div class="card-grid">${skeletons(4)}</div></div>`;
+  const data = await callTool(DRIVE_SEARCH, {query:`fullText contains '${term.replace(/'/g,"\\'")}'`, pageSize:10, excludeContentSnippets:true});
+  const files = ((data && data.files) || []).filter(f => !f.mimeType.includes("folder"));
+  document.getElementById("search-results").innerHTML = files.length
+    ? `<div class="card-grid">${files.map(fileCard).join("")}</div>`
+    : `<div class="empty">No results across your connected Drive.</div>`;
+});
+
+document.getElementById("syncTime").textContent = "last synced " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+setView(localStorage.getItem("contentHubView") || "home");
+</script>
+</body>
+</html>

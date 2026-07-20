@@ -1,21 +1,17 @@
-# Content Library
+# Orca Content Hub
 
-Static HTML mock for now; will grow into a Node project.
+Next.js app for role-first GTM content, synced with Google Drive.
 
 ## Local
 
 ```bash
+cp .env.example .env.local   # fill in Google OAuth + NEXTAUTH_* values
+npm install
 npm run dev
 ```
 
-Or open `index.html` directly in a browser.
+See [SETUP.md](./SETUP.md) for Google Cloud OAuth and Vercel env vars.
 
 ## Deploy
 
-1. Push this repo to GitHub.
-2. Import the project in [Vercel](https://vercel.com) and point it at the repo.
-3. Vercel will serve the static site from the root.
-
-## Next
-
-Drop your HTML mock as `index.html` (replace the placeholder), then iterate toward a Node app as needed.
+Push to `main`. In Vercel, set **Framework Preset** to **Next.js**, then add the env vars from SETUP.md and redeploy.
