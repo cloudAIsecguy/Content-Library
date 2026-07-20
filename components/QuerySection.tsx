@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { fetchDrive, type DriveFile } from "@/lib/driveClient";
 import FileCard from "./FileCard";
 
-function Skeletons({ n }: { n: number }) {
+function Skeletons({ n, whatsNew = false }: { n: number; whatsNew?: boolean }) {
   return (
-    <div className="card-grid">
+    <div className={`card-grid${whatsNew ? " card-grid-whatsnew" : ""}`}>
       {Array.from({ length: n }).map((_, i) => (
-        <div className="skeleton" key={i} />
+        <div className={`skeleton${whatsNew ? " skeleton-whatsnew" : ""}`} key={i} />
       ))}
     </div>
   );
@@ -16,20 +16,26 @@ function Skeletons({ n }: { n: number }) {
 
 export default function QuerySection({
   label,
+  description,
   query,
   pageSize = 6,
   orderBy,
   hideFolders = false,
   dim = false,
   showRefresh = true,
+  compactCards = false,
+  whatsNewCards = false,
 }: {
   label?: string;
+  description?: string;
   query: string;
   pageSize?: number;
   orderBy?: string;
   hideFolders?: boolean;
   dim?: boolean;
   showRefresh?: boolean;
+  compactCards?: boolean;
+  whatsNewCards?: boolean;
 }) {
   const [files, setFiles] = useState<DriveFile[] | null>(null);
   const [error, setError] = useState<string | undefined>();
@@ -55,15 +61,23 @@ export default function QuerySection({
 
   const body = (
     <>
-      {files === null && !error && <Skeletons n={3} />}
+      {files === null && !error && (
+        <Skeletons n={whatsNewCards || compactCards ? 6 : 3} whatsNew={whatsNewCards} />
+      )}
       {error && <div className="error-box">{error}</div>}
       {files && files.length === 0 && !error && (
-        <div className="empty">No matching content found in Drive yet for this category.</div>
+        <div className="empty">No matching content found yet.</div>
       )}
       {files && files.length > 0 && (
-        <div className="card-grid">
+        <div className={`card-grid${whatsNewCards ? " card-grid-whatsnew" : ""}`}>
           {files.map((f) => (
-            <FileCard file={f} key={f.id} dim={dim} />
+            <FileCard
+              file={f}
+              key={f.id}
+              dim={dim}
+              compact={compactCards}
+              whatsNew={whatsNewCards}
+            />
           ))}
         </div>
       )}
@@ -73,11 +87,14 @@ export default function QuerySection({
   if (!label) return body;
 
   return (
-    <div className="section">
+    <div className={`section${whatsNewCards ? " home-section" : ""}`}>
       <div className="section-head">
-        <h2>{label}</h2>
+        <div className="section-head-text">
+          <h2>{label}</h2>
+          {description && <p className="section-desc">{description}</p>}
+        </div>
         {showRefresh && (
-          <button className="refresh-btn" onClick={() => setNonce((n) => n + 1)}>
+          <button type="button" className="refresh-btn" onClick={() => setNonce((n) => n + 1)}>
             Refresh
           </button>
         )}

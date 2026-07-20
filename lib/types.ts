@@ -1,1 +1,9 @@
-export type ViewKey = "home" | "se" | "ae" | "cs" | "archive" | "submit";
+export type ViewKey =
+  | "home"
+  | "favorites"
+  | "se"
+  | "ae"
+  | "cs"
+  | "archive"
+  | "health"
+  | "submit";

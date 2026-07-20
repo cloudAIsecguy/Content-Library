@@ -1,7 +1,7 @@
 // Folder-ID mapping derived from Tim's real "Content Library" Drive folder
 // (https://drive.google.com/drive/folders/1bOBp-4Z9R2ZVnIR-YF6v2hsoAjNBmpmC).
-// This is a first-pass guess at folder -> role mapping. See SETUP.md / the
-// Housekeeping section in the app for what still needs a human decision.
+// This is a first-pass guess at folder -> role mapping. See Library Health
+// in the app for what still needs a human decision.
 
 export const LIBRARY_ROOT = "1bOBp-4Z9R2ZVnIR-YF6v2hsoAjNBmpmC";
 

@@ -32,6 +32,12 @@ export default function Sidebar({
         >
           <span className="nav-icon">⌂</span> Home
         </button>
+        <button
+          className={`nav-item${view === "favorites" ? " active" : ""}`}
+          onClick={() => setView("favorites")}
+        >
+          <span className="nav-icon">★</span> Favorites
+        </button>
         <div className="nav-label">By Role</div>
         {NAV_ROLES.map((r) => (
           <button
@@ -48,6 +54,13 @@ export default function Sidebar({
           onClick={() => setView("archive")}
         >
           <span className="nav-icon">▤</span> Legacy Archive
+        </button>
+        {/* TODO: Restrict Library Health to admins once an admin-role concept exists. */}
+        <button
+          className={`nav-item${view === "health" ? " active" : ""}`}
+          onClick={() => setView("health")}
+        >
+          <span className="nav-icon">◎</span> Library Health
         </button>
         <button
           className={`nav-item${view === "submit" ? " active" : ""}`}

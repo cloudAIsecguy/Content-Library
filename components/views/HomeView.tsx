@@ -1,62 +1,151 @@
 "use client";
 
+import { useState } from "react";
 import type { ViewKey } from "@/lib/types";
 import QuerySection from "../QuerySection";
+import QuickAccess from "../QuickAccess";
+import FeaturedSection from "../FeaturedSection";
 
-const ROLE_CARDS: { key: ViewKey; emoji: string; title: string; desc: string }[] = [
-  { key: "se", emoji: "🛠️", title: "Sales Engineers", desc: "Competitive intel, technical deep dives, ROI tools" },
-  { key: "ae", emoji: "💼", title: "Account Executives", desc: "Pitch decks, pricing, analyst reports" },
-  { key: "cs", emoji: "🤝", title: "Customer Success", desc: "Customer refs, case studies" },
+const ROLE_CARDS: {
+  key: ViewKey;
+  title: string;
+  subtitle: string;
+  topics: string[];
+  cta: string;
+}[] = [
+  {
+    key: "se",
+    title: "Sales Engineers",
+    subtitle: "Technical selling resources",
+    topics: ["Technical deep dives", "Architecture", "Competitive guidance", "Demos"],
+    cta: "Browse SE content →",
+  },
+  {
+    key: "ae",
+    title: "Account Executives",
+    subtitle: "Resources to help win deals",
+    topics: ["Pitch decks", "Pricing", "Discovery", "Objection handling"],
+    cta: "Browse AE content →",
+  },
+  {
+    key: "cs",
+    title: "Customer Success",
+    subtitle: "Resources to grow customers",
+    topics: ["Customer references", "Adoption", "QBRs", "Renewals"],
+    cta: "Browse CS content →",
+  },
 ];
 
-export default function HomeView({ setView }: { setView: (v: ViewKey) => void }) {
+const SEARCH_CHIPS = [
+  "Competitive",
+  "Customer Stories",
+  "Pricing",
+  "Demos",
+  "AWS",
+  "AI Security",
+  "Healthcare",
+  "ROI",
+];
+
+export default function HomeView({
+  setView,
+  onSearch,
+}: {
+  setView: (v: ViewKey) => void;
+  onSearch: (term: string) => void;
+}) {
+  const [term, setTerm] = useState("");
+
+  function submitSearch(value: string) {
+    const trimmed = value.trim();
+    if (!trimmed) return;
+    onSearch(trimmed);
+  }
+
+  function handleChip(chip: string) {
+    setTerm(chip);
+    onSearch(chip);
+  }
+
   return (
-    <>
-      <h1 className="pagetitle">Welcome back</h1>
-      <p className="pagesub">
-        A fresh, role-first home for GTM content — replacing the old Sites library.
-        Pick a role on the left, or jump into what&apos;s recently changed in Drive below.
-      </p>
-      <div className="stat-row">
-        <div className="stat-card"><div className="num">3</div><div className="lbl">Roles live (SE, AE, CS)</div></div>
-        <div className="stat-card"><div className="num">9</div><div className="lbl">Curated content categories</div></div>
-        <div className="stat-card"><div className="num" style={{ color: "var(--red)" }}>Legacy</div><div className="lbl">Old assets moved to Archive, not deleted</div></div>
-        <div className="stat-card"><div className="num" style={{ color: "var(--green)" }}>Live</div><div className="lbl">Google Drive sync status</div></div>
-      </div>
+    <div className="home">
+      <header className="home-hero">
+        <h1 className="home-hero-title">Find GTM content</h1>
+        <p className="home-hero-sub">
+          Search presentations, battlecards, customer stories, pricing, videos, technical
+          content, and more.
+        </p>
+        <div className="home-search">
+          <div className="search-wrap home-search-wrap">
+            <span className="icon" aria-hidden>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M11 11l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </span>
+            <input
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submitSearch(term);
+              }}
+              placeholder="Search by topic, competitor, customer, platform, or asset name..."
+              aria-label="Search content"
+            />
+          </div>
+          <div className="search-chips">
+            {SEARCH_CHIPS.map((chip) => (
+              <button
+                type="button"
+                key={chip}
+                className="search-chip"
+                onClick={() => handleChip(chip)}
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
 
-      <QuerySection
-        label="Recently updated across all roles"
-        query="trashed = false"
-        orderBy="modifiedTime desc"
-        pageSize={8}
-        hideFolders
-      />
-
-      <div className="section">
-        <div className="section-head"><h2>Jump to a role</h2></div>
-        <div className="tool-grid">
+      <div className="section home-section">
+        <div className="section-head">
+          <h2>Choose your role</h2>
+        </div>
+        <div className="tool-grid role-grid">
           {ROLE_CARDS.map((r) => (
-            <button className="tool-card" key={r.key} onClick={() => setView(r.key)}>
-              <div className="tname">{r.emoji} {r.title}</div>
-              <div className="tdesc">{r.desc}</div>
+            <button
+              type="button"
+              className="tool-card role-card"
+              key={r.key}
+              onClick={() => setView(r.key)}
+            >
+              <div className="tname">{r.title}</div>
+              <div className="tdesc">{r.subtitle}</div>
+              <ul className="role-topics">
+                {r.topics.map((topic) => (
+                  <li key={topic}>{topic}</li>
+                ))}
+              </ul>
+              <div className="tgo">{r.cta}</div>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="section">
-        <div className="section-head"><h2>Housekeeping — based on your real Drive folder</h2></div>
-        <div className="archive-note" style={{ marginBottom: 12, background: "#fef9e7", borderColor: "#f3e2a0", color: "#7a5c00" }}>
-          ⚠️ CS gap: no onboarding, QBR, or renewal-playbook folders were found anywhere in this
-          library. That content likely lives elsewhere (Gainsight? a separate CS Drive?) — worth
-          confirming with the CS team before this section ships.
-        </div>
-        <div className="gov-list" style={{ fontSize: 13 }}>
-          <div><strong>Recommend moving out of this hub entirely</strong> — not GTM content: HR Assets, 17 Finance, Marketplace Transactions, Sales Agreements and Policies.</div>
-          <div><strong>Recommend a future 4th role/section, not SE/AE/CS</strong>: 14 Partners + Zscaler Partnership and Integration (Partner/Channel), top-level Marketing folder, Logos/Banners/Zoom Backgrounds (shared brand kit), Events.</div>
-          <div><strong>Needs a human decision</strong>: &quot;13 Sales Internal Resources&quot; is a near-duplicate of the whole top-level taxonomy — see Legacy Archive for details.</div>
-        </div>
-      </div>
-    </>
+      <FeaturedSection />
+
+      <QuickAccess onOpenFavorites={() => setView("favorites")} />
+
+      <QuerySection
+        label="What's New"
+        description="Recently published and updated GTM content."
+        query="trashed = false"
+        orderBy="modifiedTime desc"
+        pageSize={6}
+        hideFolders
+        whatsNewCards
+      />
+    </div>
   );
 }
