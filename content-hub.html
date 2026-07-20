@@ -166,7 +166,7 @@
   </aside>
 
   <div class="content">
-    <div class="banner">Concept mockup — the cards below pull live from your connected Google Drive so this feels real. In production this would query a single governed "Content Library" Drive folder instead of an open search.</div>
+    <div class="banner">Concept mockup — role pages below are wired to the real folders inside your Content Library Drive folder (the one you shared). The mapping of folder → role is a first-pass guess; see Housekeeping on Home and the note in Legacy Archive for what needs a human decision. Global search still queries your whole Drive.</div>
     <div class="topbar">
       <div class="search-wrap">
         <span class="icon">⌕</span>
@@ -278,32 +278,81 @@ const ROLE_TOOLS = {
   ],
 };
 
+function pidQuery(ids){ return ids.map(id => `parentId = '${id}'`).join(" or "); }
+
+const LIBRARY_ROOT = "1bOBp-4Z9R2ZVnIR-YF6v2hsoAjNBmpmC"; // real Content Library Drive folder Tim shared
+
 const ROLE_CONFIG = {
   se: {
     title:"Sales Engineers", emoji:"🛠️",
-    desc:"Technical assets, POV materials, and competitive intel — synced live from Drive.",
+    desc:"Mapped from your actual Content Library folders — competitive, product-technical, and value-engineering content.",
     sections:[
-      {id:"se-comp", label:"Competitive Intel", query:"title contains 'competitive' or title contains 'battlecard' or title contains 'vs.'"},
-      {id:"se-pov", label:"POV & Demo Assets", query:"title contains 'POV' or title contains 'demo' or title contains 'technical'"},
-      {id:"se-enable", label:"SE Enablement", query:"title contains 'SE_' or title contains 'SE Enablement' or fullText contains 'SE enablement'"},
+      {id:"se-comp", label:"Competitive & Displacement", query:pidQuery([
+        "1MXPAKQQvV-aadq_J1w3f-BSo7vpb-G4h", // 2 Competitive Intelligence
+        "1wIP4IFSmTd-BmoQoq0o43zB4xYgkVRxR", // Orca Technical Differentiators
+        "1P1qtsD2dPIK2AgjhCUVRRhxoIGGmBw-R", // Wiz to Orca Migration
+        "1DWx7Vp4FFlwM0iE7YNf4FaVuZaP8sZlN", // Migration Plan: Wiz to Orca Security
+        "1iyJrG4sRPrWfgBG_RFFnEymTR3eUXzre", // Wiz Pricing Docs
+      ])},
+      {id:"se-tech", label:"Product & Technical Deep Dives", query:pidQuery([
+        "1TIudCmYZFsisv3GXvulSnKfeFz94vier", // 3 Recorded Demo
+        "1pdRFTPHCUZNP5wTVmCi5T-f5lNXUb3-9", // 11 Orca Agent
+        "1jWi3O-oWXCdxrFJ-v9SxZ6_YJGWkWDi5", // 20 Orca Agent (dup, see housekeeping)
+        "1yFe9Ix1GCYgcHxiNXu9qG6VcOc0AMhO2", // Orca AI Functions FAQ
+        "1K0lNYS9Ul0zqHJlpOdOD-r4YqL4kU9Z9", // Orca Sensor
+        "19m9OGnJXK6sbAK8ZK4RRJZ5NC10ZvgHy", // AppSec
+        "1F-gsfNp8MESNt_IEIMMseJZLW0KOLzZZ", // 12 FedRAMP
+      ])},
+      {id:"se-value", label:"Value Engineering", query:pidQuery([
+        "15z9sDip5d5Y8cZrHsJ7Wwcoldurf8NYq", // 18 ROI Calculator and Cloud Cost Optimization
+      ])},
     ]
   },
   ae: {
     title:"Account Executives", emoji:"💼",
-    desc:"Pitch decks, pricing tools, and customer proof points — synced live from Drive.",
+    desc:"Mapped from your actual Content Library folders — pitch, pricing/objection handling, and analyst proof points.",
     sections:[
-      {id:"ae-pitch", label:"Pitch & Proposal Decks", query:"title contains 'pitch' or title contains 'proposal' or title contains 'deck'"},
-      {id:"ae-pricing", label:"Pricing & ROI", query:"title contains 'pricing' or title contains 'ROI' or title contains 'TCO'"},
-      {id:"ae-proof", label:"Case Studies & References", query:"title contains 'case study' or title contains 'reference' or title contains 'customer story'"},
+      {id:"ae-pitch", label:"Pitch & Positioning", query:pidQuery([
+        "1kgz8ayMZkAuZz4Muzih-Rk3nzRvQ7_G5", // 1 Pitch Deck
+        "1NXDBcNErKWOY_mHODzP9I_MJC1-3u24R", // 5 Positioning and Personas
+        "1DVnnzqBvDmjKjkrJL96kYCkO0xd78wmp", // Messaging and Positioning
+        "1tcbSf60VGVE-PogevLbHRsojrSVEwuOD", // Slide Deck Toolkit Template
+        "1znTQOQql1VsmJrUQt977QQSACr3PllOX", // Sales Presentation and Document Templates
+        "18lUn5pxLZQ5w-fvvAubWFyiOiQm0v8ju", // Sales Presentations Library
+        "1HeoHcmdjRr27xodKNDP1tYSU7lOzD_4g", // DataSheets and Solution Briefs
+        "1fH7KXsy3tMC6XFpXl7m25CeQYJTUEXds", // 15 Security and IT (persona page, not internal IT)
+      ])},
+      {id:"ae-pricing", label:"Pricing, FAQ & Objection Handling", query:pidQuery([
+        "1OjloKfNorZSsCEWOSKYT8oLRdKDUGy3c", // 9 Pricing and Packaging
+        "113uY7LUcVBO9aw3s7lfNDHCa4UE-qz_o", // 6 Sales FAQ
+        "1zF8Ves8Y91W5fS1QjFkB-uDyfh5R6e5y", // Cheat Sheets
+        "1SCaVHoRLZVQCczV086Uv29zh-CPA0Yth", // 7 Sales Toolkit
+        "1I4xMYYAUo7NFN7lBeSt_ltZB0mQ15Ly8", // 4 Sales Enablement
+        "1w9PIEbplnPu6NQ7TpuPs5OrIb3ttsnha", // Sales Excellence
+        "1peOYre4BrHxA2gLRkGMsb_jP9a9h-t8W", // 10 Collateral
+      ])},
+      {id:"ae-research", label:"Research & Analyst Reports", query:pidQuery([
+        "1lXykr0lcBdeahr1KSXGrHRu3WTvXRU4L", // Research Reports
+        "1sqs_-It73WcbEXaNNqsgzS0GIby8Tpxz", // TAG Cyber Report (a)
+        "1-OnbedRTbjkQIC-KleeRBxYEzoaAYuxP", // TAG Cyber Report (b, dup)
+        "1ZHoHYL8I3EyVQ1fQkxwKzHs2q17mge82", // 2026 State of AI Security Report
+        "1SERa7CuasF8bW0HUkR9kXmMUWg3lKxXp", // 2025 State of Cloud Security Report
+      ])},
     ]
   },
   cs: {
     title:"Customer Success", emoji:"🤝",
-    desc:"Onboarding guides, QBR templates, and renewal playbooks — synced live from Drive.",
+    desc:"Mapped from what actually exists today — mostly references & case studies. Onboarding/QBR/renewal content wasn't found in this folder (see note below).",
     sections:[
-      {id:"cs-onboard", label:"Onboarding", query:"title contains 'onboarding'"},
-      {id:"cs-qbr", label:"QBR Templates", query:"title contains 'QBR'"},
-      {id:"cs-renew", label:"Renewal & Expansion Playbooks", query:"title contains 'renewal' or title contains 'playbook' or title contains 'upsell' or title contains 'expansion'"},
+      {id:"cs-refs", label:"Customer References & Case Studies", query:pidQuery([
+        "1cqVeKTPjj9jRN6UGpLwu__SSIBuC3Q3p", // 8 Customer References
+        "1dHhjrQ3vz03Gjs3eTFVT7rA-kHi24A73", // 19 Case Studies
+        "1mYk4x4Ukwxt7m6ALIYR4rr6M4FdD0VzD", // 16 Customers
+      ])},
+      {id:"cs-account", label:"Account & Product Resources", query:pidQuery([
+        "1BWLEntAfceq0LMkzt-Lj0BAhW1N1spEG", // User Center
+        "1_BVUMZGXerC1UmnsLgec8G11GfsZZqg0", // 21 Pod Pages
+      ])},
     ]
   }
 };
@@ -336,9 +385,20 @@ function renderHome(){
     <div class="section">
       <div class="section-head"><h2>Jump to a role</h2></div>
       <div class="tool-grid">
-        <div class="tool-card" style="cursor:pointer" onclick="setView('se')"><div class="tname">🛠️ Sales Engineers</div><div class="tdesc">Competitive intel, POV, demo assets</div></div>
-        <div class="tool-card" style="cursor:pointer" onclick="setView('ae')"><div class="tname">💼 Account Executives</div><div class="tdesc">Pitch decks, pricing, case studies</div></div>
-        <div class="tool-card" style="cursor:pointer" onclick="setView('cs')"><div class="tname">🤝 Customer Success</div><div class="tdesc">Onboarding, QBR, renewal playbooks</div></div>
+        <div class="tool-card" style="cursor:pointer" onclick="setView('se')"><div class="tname">🛠️ Sales Engineers</div><div class="tdesc">Competitive intel, technical deep dives, ROI tools</div></div>
+        <div class="tool-card" style="cursor:pointer" onclick="setView('ae')"><div class="tname">💼 Account Executives</div><div class="tdesc">Pitch decks, pricing, analyst reports</div></div>
+        <div class="tool-card" style="cursor:pointer" onclick="setView('cs')"><div class="tname">🤝 Customer Success</div><div class="tdesc">Customer refs, case studies</div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Housekeeping — based on your real Drive folder</h2></div>
+      <div class="archive-note" style="margin-bottom:12px;background:#fef9e7;border-color:#f3e2a0;color:#7a5c00;">
+        ⚠️ CS gap: no onboarding, QBR, or renewal-playbook folders were found anywhere in this library. That content likely lives elsewhere (Gainsight? a separate CS Drive?) — worth confirming with the CS team before this section ships.
+      </div>
+      <div class="gov-list" style="font-size:13px">
+        <div><strong>Recommend moving out of this hub entirely</strong> — not GTM content: HR Assets, 17 Finance, Marketplace Transactions, Sales Agreements and Policies.</div>
+        <div><strong>Recommend a future 4th role/section, not SE/AE/CS</strong>: 14 Partners + Zscaler Partnership and Integration (Partner/Channel), top-level Marketing folder, Logos/Banners/Zoom Backgrounds (shared brand kit), Events.</div>
+        <div><strong>Needs a human decision</strong>: "13 Sales Internal Resources" is a near-duplicate of the whole top-level taxonomy — see Legacy Archive for details.</div>
       </div>
     </div>
   `;
@@ -374,16 +434,31 @@ function renderRole(key){
   cfg.sections.forEach(s => renderQuerySection(s.id, s.query));
 }
 
+const ARCHIVE_FOLDER_IDS = [
+  "1sB9ayOOxJ3HE2d--S4wOWz-n5zC_Po7a", // Training Archive (literally named archive)
+  "11_-z-qvUd0WhInTcxGL2_Djh9rqFVp9g", // Google Acquiring Wiz (reactive news-jack, event has passed)
+  "1hUO_1l597H1sBZda6D-njJY9vbZvb38n", // Sales Kit: Rapid Response - Google Acquiring Wiz
+];
+
 function renderArchive(){
   document.getElementById("viewRoot").innerHTML = `
     <h1 class="pagetitle">Legacy Archive</h1>
     <p class="pagesub">Old assets aren't deleted — they're moved here, out of the way, until an owner reviews and either refreshes or retires them. Nothing here shows up in role pages or search by default.</p>
-    <div class="archive-note">⚠️ Anything untouched for 12+ months auto-lands here in the real version. Below is a live preview using your Drive's oldest matches as a stand-in.</div>
+    <div class="archive-note">⚠️ These three folders from your real library look like archive candidates today: a folder literally named "Training Archive," and two folders built for the Google/Wiz acquisition news cycle, which has since passed.</div>
     <label class="archive-toggle">
       <input type="checkbox" onchange="toggleArchive(this)">
       <div><div class="lbl">Show legacy content</div><div class="sub">Hidden by default — this is the point.</div></div>
     </label>
     <div id="archiveResults"></div>
+    <div class="section" style="margin-top:26px">
+      <div class="section-head"><h2>Other cleanup spotted in your Drive</h2></div>
+      <div class="gov-list" style="font-size:13px">
+        <div>• "11 Orca Agent" and "20 Orca Agent" — two separate folders, same topic. Pick one.</div>
+        <div>• "TAG Cyber Report" exists as two separate folders with the identical name.</div>
+        <div>• Four duplicate shortcuts to "2024 Orca Security Pitch Deck v1" sitting loose at the library root.</div>
+        <div>• "13 Sales Internal Resources" contains its own copies of ROI Calculator, Sales FAQ, Research Reports, Logos/Banners, and Live Events — all of which already exist as separate top-level folders. This nested duplicate tree is likely the biggest source of clutter.</div>
+      </div>
+    </div>
   `;
 }
 async function toggleArchive(cb){
@@ -391,8 +466,8 @@ async function toggleArchive(cb){
   if(!cb.checked){ el.classList.remove("show"); return; }
   el.classList.add("show");
   el.innerHTML = `<div class="card-grid">${skeletons(4)}</div>`;
-  const data = await callTool(DRIVE_SEARCH, {query:"modifiedTime < '2025-06-01T00:00:00Z'", pageSize:8, excludeContentSnippets:true});
-  const files = ((data && data.files) || []).filter(f => !f.mimeType.includes("folder"));
+  const data = await callTool(DRIVE_SEARCH, {query:pidQuery(ARCHIVE_FOLDER_IDS), pageSize:10, excludeContentSnippets:true});
+  const files = (data && data.files) || [];
   el.innerHTML = files.length
     ? `<div class="card-grid">${files.map(f => `<div class="dim-card">${fileCard(f)}</div>`).join("")}</div>`
     : `<div class="empty">No stale content matched (good sign).</div>`;
